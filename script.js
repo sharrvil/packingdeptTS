@@ -1022,7 +1022,7 @@ function validateRemoveLocation() {
 function updateResultsCount() {
     const totalItems = filteredData.length;
     if (elements.resultsCount) {
-        elements.resultsCount.textContent = `Showing ${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+        elements.resultsCount.textContent = `Showing ${totalItems-1} item${totalItems !== 1 ? 's' : ''}`;
     }
 }
 
@@ -1134,4 +1134,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.addEventListener('error', function(e) {
     console.error('Global error:', e.error);
     showNotification('Application Error', 'An unexpected error occurred. Please refresh the page.', 'error');
+
 });
