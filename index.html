@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technospace Engineers - Packing Department Inventory</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="#">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Loading Inventory Data...</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container" id="mainContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="your-logo.png" alt="Company Logo">
+                    <!-- Logo will be placed here -->
+                </div>
+                <h1 class="company-name">Technospace Engineers</h1>
+            </div>
+            <p class="subtitle">Packing Department Inventory Management</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Section -->
+            <section class="search-section card slide-up">
+                <h2><i class="fas fa-search"></i> Search Parts</h2>
+                <div class="search-container">
+                    <div class="search-input-group">
+                        <input type="text" id="partSearch" placeholder="Enter part number" class="search-input">
+                        <button id="searchBtn" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div class="filter-options">
+                        <div class="filter-group">
+                            <label for="rowFilter">Filter by Row:</label>
+                            <select id="rowFilter" class="filter-select">
+                                <option value="">All Rows (A-Z)</option>
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="rackFilter">Filter by Rack:</label>
+                            <select id="rackFilter" class="filter-select">
+                                <option value="">All Racks</option>
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inventory Actions -->
+            <section class="actions-section card slide-up delayed-1">
+                <h2><i class="fas fa-tasks"></i> Inventory Actions</h2>
+                <div class="action-buttons">
+                    <button id="addPartBtn" class="btn btn-action btn-add">
+                        <i class="fas fa-plus-circle"></i> Add Parts
+                    </button>
+                    <button id="removePartBtn" class="btn btn-action btn-remove">
+                        <i class="fas fa-minus-circle"></i> Remove Parts
+                    </button>
+                    <button id="viewAllBtn" class="btn btn-action btn-view">
+                        <i class="fas fa-list"></i> View All Inventory
+                    </button>
+                    <button id="refreshBtn" class="btn btn-action btn-refresh">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Display -->
+            <section class="results-section card slide-up delayed-2">
+                <h2><i class="fas fa-boxes"></i> Inventory Results</h2>
+                <div class="results-info">
+                    <p id="resultsCount">Showing 0 items</p>
+                    <div class="sort-options">
+                        <label for="sortBy">Sort by:</label>
+                        <select id="sortBy" class="sort-select">
+                            <option value="partNumber">Part Number</option>
+                            <option value="quantity">Quantity (High to Low)</option>
+                            <option value="row">Row (A-Z)</option>
+                            <option value="location">Location</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Part Number</th>
+                                <th>TS Part Number</th>
+                                <th>Quantity</th>
+                                <th>Location</th>
+                                <th>Row</th>
+                                <th>Rack</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Data will be populated by JS -->
+                            <tr class="placeholder-row">
+                                <td colspan="7" class="empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <p>Search for parts or view all inventory to see results here.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button id="prevPage" class="btn btn-pagination" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span id="pageInfo">Page 1 of 1</span>
+                    <button id="nextPage" class="btn btn-pagination" disabled>
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Location Visualization -->
+            <section class="visualization-section card slide-up delayed-3">
+                <h2><i class="fas fa-map-marked-alt"></i> Warehouse Layout</h2>
+                <div class="visualization-container">
+                    <div class="rows-container" id="rowsContainer">
+                        <!-- Rows A-Z will be generated by JS -->
+                    </div>
+                    <div class="visualization-info">
+                        <div class="color-legend">
+                            <div class="legend-item">
+                                <span class="legend-color low-stock"></span>
+                                <span>Low Stock (< 10)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color medium-stock"></span>
+                                <span>Medium Stock (10-50)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color high-stock"></span>
+                                <span>High Stock (> 50)</span>
+                            </div>
+                        </div>
+                        <p class="hint"><i class="fas fa-mouse-pointer"></i> Click on a rack to view its contents</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Technospace Engineers &copy; <span id="currentYear"></span> | Packing Department Inventory System</p>
+            <p class="footer-note">Data is stored and synchronized with Google Sheets</p>
+        </footer>
+    </div>
+
+    <!-- Add Parts Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal card">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Parts to Inventory</h2>
+                <button class="close-modal" id="closeAddModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addPartForm">
+                    <div class="form-group">
+                        <label for="addPartNumber">Part Number *</label>
+                        <input type="text" id="addPartNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addTsPartNumber">TS Part Number</label>
+                        <input type="text" id="addTsPartNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="addQuantity">Quantity to Add *</label>
+                        <input type="number" id="addQuantity" min="1" value="1" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addRow">Row *</label>
+                            <select id="addRow" required>
+                                <option value="">Select Row</option>
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addRack">Rack *</label>
+                            <select id="addRack" required>
+                                <option value="">Select Rack</option>
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addPosition">Position *</label>
+                            <input type="number" id="addPosition" min="1" max="99" placeholder="e.g., 2 for A1-2" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelAdd">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Parts</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Parts Modal -->
+    <div class="modal-overlay" id="removeModal">
+        <div class="modal card">
+            <div class="modal-header">
+                <h2><i class="fas fa-minus-circle"></i> Remove Parts from Inventory</h2>
+                <button class="close-modal" id="closeRemoveModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="removePartForm">
+                    <div class="form-group">
+                        <label for="removePartNumber">Part Number *</label>
+                        <input type="text" id="removePartNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="removeLocation">Location (e.g., A1-2) *</label>
+                        <input type="text" id="removeLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="removeQuantity">Quantity to Remove *</label>
+                        <input type="number" id="removeQuantity" min="1" value="1" required>
+                    </div>
+                    <div class="current-info" id="currentPartInfo">
+                        <!-- Current part info will be displayed here -->
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelRemove">Cancel</button>
+                        <button type="submit" class="btn btn-remove">Remove Parts</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rack Details Modal -->
+    <div class="modal-overlay" id="rackModal">
+        <div class="modal card">
+            <div class="modal-header">
+                <h2 id="rackModalTitle"><i class="fas fa-box-open"></i> Rack Contents</h2>
+                <button class="close-modal" id="closeRackModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="rackContents">
+                    <!-- Rack contents will be displayed here -->
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="notificationToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle" id="toastIcon"></i>
+            <div class="toast-message">
+                <strong id="toastTitle">Success</strong>
+                <p id="toastMessage">Operation completed successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Sheets API Script (to be configured separately) -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
