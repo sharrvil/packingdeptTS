@@ -1022,7 +1022,7 @@ function validateRemoveLocation() {
 function updateResultsCount() {
     const totalItems = filteredData.length;
     if (elements.resultsCount) {
-        elements.resultsCount.textContent = `Showing ${totalItems-1} item${totalItems !== 1 ? 's' : ''}`;
+        elements.resultsCount.textContent = `Showing ${totalItems} item${totalItems !== 1 ? 's' : ''}`;
     }
 }
 
@@ -1136,3 +1136,4 @@ window.addEventListener('error', function(e) {
     showNotification('Application Error', 'An unexpected error occurred. Please refresh the page.', 'error');
 
 });
+
